@@ -1,4 +1,4 @@
-databaseInformer <- function(...) {
+databaseProvider <- function(...) {
 
   # Ideally, this object is an intermediary between the user and the "topconnect" package.
   # This object accepts user input and determines whether all required fields are present.
@@ -77,12 +77,13 @@ databaseInformer <- function(...) {
       return( password )
     } else if ( !is.null(vault_user) & !is.null(vault_key) ) {
       # Is the secret in the vault?
+      vault <- topsecret::get_secret_vault()
       if ( length( secret::list_owners(name=vault_key,vault) ) > 0 ) {
         # Do you have access to it?
         if ( vault_user==secret::list_owners(name=vault_key,vault) ) {
           return( secret::get_secret( name=vault_key,
                                       key=secret::local_key(),
-                                      vault=topsecret::get_secret_vault() ) )
+                                      vault=vault ) )
         } else {
           cat( "The user ", vault_user, " does not have access to the secret ", vault_key, "\n" )
           return( character(0) )
@@ -102,6 +103,10 @@ databaseInformer <- function(...) {
                           users=vault_user,
                           vault=topsecret::get_secret_vault() )
     }
+  }
+  
+  getConnection <- function() {
+    return( topconnect::db(user=user,password=get_password(),host=host,dbname=dbname) )
   }
   
   valid <- function() {
@@ -132,7 +137,7 @@ databaseInformer <- function(...) {
     }
   }
 
-  obj <- list(user=get_user,host=get_host,dbname=get_dbname,password=get_password,valid=valid,isValid=isValid,get=get)
+  obj <- list(user=get_user,host=get_host,dbname=get_dbname,password=get_password,valid=valid,isValid=isValid,get=get,connect=getConnection)
   class(obj) <- c('databaseInformer', 'argumentComponent' )
   return( obj )
 }

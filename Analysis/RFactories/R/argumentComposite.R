@@ -27,6 +27,19 @@ argumentComposite <- function(...) {
     # Run through each component until you find one with a field called "fieldname"    
         
   }
+  
+  # Add a database reading object here ...
+  # This is for "parametereInforrmer" object!
+  loadParameters <- function( dbi) {
+    # This requires the presence of BOTH a paramaterInformer AND a databaseInformer.
+    if ( findClass('parameterInformer') & findClass('databaseInformer') ) {
+      pi <- findClass('parameterInformer')
+      di <- findClass('databaseInformer')
+      
+    }
+  }
+  
+  
 
   findClass <- function( className ) {
     # Useful for returning a "fileProvider", which is a custom iterator over filenames.   
