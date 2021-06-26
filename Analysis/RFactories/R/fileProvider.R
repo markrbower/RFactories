@@ -1,5 +1,4 @@
 fileProvider <- function(...) {
-  
   # What are some things that you would need to locate files?
   # path
   # regular expression (subject? date? channel number? file extension? )
@@ -16,6 +15,11 @@ fileProvider <- function(...) {
   #
   # Perhaps it is better to think of the returned object as a "fileProvider";
   # you ask for "hasNext" and "next" and it provides.
+  #' @export
+  #' @examples
+  #' \dontrun{
+  #' }
+  
   args <- list(...)
   
   path <- NULL

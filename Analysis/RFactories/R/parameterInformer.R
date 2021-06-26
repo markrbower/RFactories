@@ -6,6 +6,11 @@ parameterInformer <- function(...) {
   # Those parameter values must be available to the user, too.
   # This precludes a fixed list of fieldnames for this class of object.
   # parms <- list(centerTime=0,range=c(-3000,2000), signalType="AP")
+  #' @export
+  #' @examples
+  #' \dontrun{
+  #' }
+  
 
   # 1. parse all args
   args <- list(...)
@@ -41,5 +46,4 @@ parameterInformer <- function(...) {
   obj <- list(isValid=isValid,get=get)
   class(obj) <- c( 'parameterInformer', 'argumentComponent' )
   return( obj )
-  
 }

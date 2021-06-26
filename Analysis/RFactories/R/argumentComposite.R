@@ -11,7 +11,11 @@ argumentComposite <- function(...) {
   # How do I do this when it may not know exactly what is available? What about allowing a user to query for the
   # presence of specific components? What to do with the "fileProvider"? Do I download a specific handle by which
   # to refer to it? For example, fp <- args$fileProvider(); while ( hasNext(fp) ) { nextElem(fp) }.
-  
+  #' @export
+  #' @examples
+  #' \dontrun{
+  #' }
+
   components <- list()
   
   add <- function( x ) {
@@ -23,19 +27,35 @@ argumentComposite <- function(...) {
     }
   }
   
-  get <- function( fieldName ) {
+  isValid <- function( fieldname ) {
     # Run through each component until you find one with a field called "fieldname"    
-        
+    for ( component in components ) {
+      if ( component$isValid( fieldname ) ) {
+        return( true )
+      }
+    }
+    return( false )
+  }
+  
+  get <- function( fieldName ) {
+    # Run through each component and return the one named 'fieldname'   
+    for ( component in components ) {
+      if ( component$isValid( fieldname ) ) {
+        return( component$get( fieldname ) )
+      }      
+    }
+    return( NULL )
   }
   
   # Add a database reading object here ...
   # This is for "parametereInforrmer" object!
-  loadParameters <- function( dbi) {
+  loadParameters <- function() {
     # This requires the presence of BOTH a paramaterInformer AND a databaseInformer.
     if ( findClass('parameterInformer') & findClass('databaseInformer') ) {
       pi <- findClass('parameterInformer')
       di <- findClass('databaseInformer')
-      
+      conn <- di$connect()
+      pi$loadParameters( pi )
     }
   }
   
@@ -53,7 +73,7 @@ argumentComposite <- function(...) {
     return( character(0) )    
   }
   
-  obj <- list(add=add,get=get,findClass=findClass)
+  obj <- list(add=add,get=get,findClass=findClass,loadParameters=loadParameters)
   class(obj) <- c( 'argumentComponent' )
   return( obj )
 }

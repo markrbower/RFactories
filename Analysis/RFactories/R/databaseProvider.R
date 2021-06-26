@@ -1,10 +1,9 @@
 databaseProvider <- function(...) {
-
   # Ideally, this object is an intermediary between the user and the "topconnect" package.
   # This object accepts user input and determines whether all required fields are present.
   #
   # An RMySQL database connection requires four inputs: user, password, host, dbname
-  
+  #
   # There are seven possible inputs:
   # project:    the name of the project (default: working directory name)
   # db_user:    the username for database access (default: Sys.info$user)
@@ -13,8 +12,8 @@ databaseProvider <- function(...) {
   # host:       the name of the database computer/server (default: localhost)
   # dbname:     the name of the database to access (default: <project>)
   # password:   NOT RECOMMENDED, but this would provide a non-encrypted password
-    
-  
+  #  
+  #
   # There are two special aspects that make this non-trivial:
   #   project, which allows the user to store and retrieve connection information under a single key
   #     If the user supplies a “project” name, there are two possible cases:
@@ -23,9 +22,13 @@ databaseProvider <- function(...) {
   #   vault, which allows the user to user passwords securely.
   #     If the user supplies the “vault_user”, but no “vault_key”,
   #     then this object could request the user supply the password via a pop-up.
-  
+  #
   # dbi <- databaseInformer(user='markrbower',host='localhost',dbname='NV',vault_user='markrbower',vault_key="MEF_password")
   # conn <- topconnect::db(user=dbi$user(),password=dbi$password(),host=dbi$host(),dbname=dbi$dbname() )
+  #' @export
+  #' @examples
+  #' \dontrun{
+  #' }
   
   
   # 1. parse all args
@@ -33,7 +36,7 @@ databaseProvider <- function(...) {
   # user
   user <- NULL
   if ( 'user' %in% names(args) ) { user <- RFactories:::parseArg( args, 'user' ); args[['user']] <- NULL}
-  if ( 'dbduser' %in% names(args) ) { user <- RFactories:::parseArg( args, 'dbuser' ); args[['dbuser']] <- NULL}
+  if ( 'dbuser' %in% names(args) ) { user <- RFactories:::parseArg( args, 'dbuser' ); args[['dbuser']] <- NULL}
 
   # password 
   password <- NULL
