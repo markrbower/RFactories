@@ -15,26 +15,26 @@ parameterInformer <- function(...) {
   # 1. parse all args
   args <- list(...)
 
-  # 2. read through the args
-  fieldnames <- names(args)
-  
-  # 3. Look for a 'signalType' entry and load the appropriate parameter file.
-  if ( isValid("signalType") ) {
-    conn <- DBI::dbConnect( RMySQL::MySQL(), user=db_user, dbname=dbName, host=hostname, password=password )
-    
-    context <- topconnect::getContextFromTaskTable( conn, args )
-    #  print( 'Getting parameters' )
-    parameters <- NPO:::loadParameters( context )
+  loadParameters <- function( dbp ) {
+    if ( isValid("signalType") ) {
+      conn <- dbp$getConnection()
+        context <- topconnect::getContextFromTaskTable( conn, args )
+      parameters <- NPO:::loadParameters( context )
+      # Incorporate these parameters into the object's list
+      args <<- append( args, parameters )
+      DBI::dbDisconnect( conn )
+    }
   }
-
+  
   # Functions for class 'argumentComponent'
   isValid <- function( fieldname ) {
-    if ( fieldname %in% fieldnames ) {
-      return(TRUE)    
+    if ( fieldname %in% names(args) ) {
+      return(TRUE)
     } else {
       return(FALSE)
     }    
   }
+  
   get <- function( fieldname ) {
     if ( isValid(fieldname) ) {
       return( args[[fieldname]] )
@@ -42,8 +42,8 @@ parameterInformer <- function(...) {
       return( character(0) )
     }
   }
-  
-  obj <- list(isValid=isValid,get=get)
+
+  obj <- list(isValid=isValid,get=get,loadParameters=loadParameters)
   class(obj) <- c( 'parameterInformer', 'argumentComponent' )
   return( obj )
 }
