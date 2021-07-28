@@ -16,6 +16,7 @@ argumentComposite <- function(...) {
   #' \dontrun{
   #' }
 
+  iterationCount <- 0
   components <- list()
   
   add <- function( x ) {
@@ -37,7 +38,7 @@ argumentComposite <- function(...) {
     return( false )
   }
   
-  get <- function( fieldName ) {
+  get <- function( fieldname ) {
     # Run through each component and return the one named 'fieldname'   
     for ( component in components ) {
       if ( component$isValid( fieldname ) ) {
@@ -45,6 +46,13 @@ argumentComposite <- function(...) {
       }      
     }
     return( NULL )
+  }
+  
+  setIterationMax <- function() {
+    tmp <- get( "iterationMax" )
+    if ( !is.null(tmp) ) {
+      iterationMax <<- tmp
+    }
   }
   
   # Add a database reading object here ...
@@ -73,7 +81,20 @@ argumentComposite <- function(...) {
     return( character(0) )    
   }
   
-  obj <- list(add=add,get=get,findClass=findClass,loadParameters=loadParameters)
+  continue <- function() {
+    iterationCount <<- iterationCount + 1
+    if ( iterationMax > 0 ) {
+      if ( iterationCount <= iterationMax ) {
+        return( TRUE )
+      } else {
+        return( FALSE )
+      }
+    } else {
+      return( TRUE )
+    }
+  }
+  
+  obj <- list(add=add,get=get,setIterationMax=setIterationMax,findClass=findClass,loadParameters=loadParameters,continue=continue)
   class(obj) <- c( 'argumentComponent' )
   return( obj )
 }

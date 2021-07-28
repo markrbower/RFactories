@@ -29,11 +29,7 @@ metadataInformer <- function(...) {
       return( character(0) )
     }
   }
-  getFilePassword() <- function() {
-    # This is too simple, now, but it will work ... for now.
-    return( "MEF_password" )
-  }
-  
+
   obj <- list(isValid=isValid,get=get)
   class(obj) <- c( 'metadataInformer', 'argumentComponent' )
   return( obj )

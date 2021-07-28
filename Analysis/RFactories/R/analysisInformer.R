@@ -1,5 +1,9 @@
 analysisInformer <- function(...) {
   # Exactly like parameterInformer, except it doesn't load the parameter file.
+  #' @export
+  #' @examples
+  #' \dontrun{
+  #' }
   
   # 1. parse all args
   args <- list(...)
@@ -22,8 +26,12 @@ analysisInformer <- function(...) {
       return( character(0) )
     }
   }
+  add <- function( named_value ) {
+    args <<- append( args, named_value )
+    fieldnames <<- names(args)
+  }
   
-  obj <- list(isValid=isValid,get=get)
+  obj <- list(isValid=isValid,get=get,add=add)
   class(obj) <- c( 'analysisInformer', 'argumentComponent' )
   return( obj )
 }
