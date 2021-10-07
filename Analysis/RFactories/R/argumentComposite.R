@@ -32,16 +32,17 @@ argumentComposite <- function(...) {
     # Run through each component until you find one with a field called "fieldname"    
     for ( component in components ) {
       if ( component$isValid( fieldname ) ) {
-        return( true )
+        return( TRUE )
       }
     }
-    return( false )
+    return( FALSE )
   }
   
   get <- function( fieldname ) {
     # Run through each component and return the one named 'fieldname'   
     for ( component in components ) {
       if ( component$isValid( fieldname ) ) {
+#        print( class(component) )
         return( component$get( fieldname ) )
       }      
     }
@@ -67,14 +68,12 @@ argumentComposite <- function(...) {
     }
   }
   
-  
-
   findClass <- function( className ) {
     # Useful for returning a "fileProvider", which is a custom iterator over filenames.   
-    it <- ihasNext( iter( components ) )
-    while ( hasNext(it) ) {
-      component <- nextElem( it )
-      if ( "argumentComponent" %in% class(component) ) {
+    it <- itertools::ihasNext( iterators::iter( components ) )
+    while ( itertools::hasNext(it) ) {
+      component <- iterators::nextElem( it )
+      if ( className %in% class(component) ) {
         return( component )
       }
     }
@@ -94,8 +93,8 @@ argumentComposite <- function(...) {
     }
   }
   
-  obj <- list(add=add,get=get,setIterationMax=setIterationMax,findClass=findClass,loadParameters=loadParameters,continue=continue)
-  class(obj) <- c( 'argumentComponent' )
+  obj <- list(isValid=isValid,add=add,get=get,setIterationMax=setIterationMax,findClass=findClass,loadParameters=loadParameters,continue=continue)
+  class(obj) <- c( 'argumentComposite' )
   return( obj )
 }
 

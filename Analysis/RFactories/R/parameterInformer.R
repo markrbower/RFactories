@@ -17,12 +17,12 @@ parameterInformer <- function(...) {
 
   loadParameters <- function( dbp ) {
     if ( isValid("signalType") ) {
-      conn <- dbp$getConnection()
-        context <- topconnect::getContextFromTaskTable( conn, args )
-      parameters <- NPO:::loadParameters( context )
+#      conn <- dbp$connect()
+#      context <- topconnect::getContextFromTaskTable( conn, args )
+      parameters <- NPO:::loadParameters( args )
       # Incorporate these parameters into the object's list
       args <<- append( args, parameters )
-      DBI::dbDisconnect( conn )
+#      DBI::dbDisconnect( conn )
     }
   }
   

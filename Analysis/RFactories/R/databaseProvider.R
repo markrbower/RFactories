@@ -60,7 +60,8 @@ databaseProvider <- function(...) {
   # dbname
   dbname <- NULL
   if ( 'dbname' %in% names(args) ) { dbname <- RFactories:::parseArg( args, 'dbname' ); args[['dbname']] <- NULL }
-
+  if ( 'dbname' %in% names(args) ) { service <- RFactories:::parseArg( args, 'dbname' ); args[['dbname']] <- NULL }
+  
   # 2. check for unused args and give a warning
   if ( length(args) > 0 ) {
     print( paste0( "Leftover arguments: ", args, "\n" ) )
@@ -133,6 +134,9 @@ databaseProvider <- function(...) {
     }    
   }
   get <- function( fieldname ) {
+    if ( fieldname=='service' ) { # KLUGE!
+      fieldname <- 'dbname'
+    }
     if ( isValid(fieldname) ) {
       return( eval(parse(text=paste0("get_",fieldname,"()"))) )
     } else {
@@ -141,7 +145,7 @@ databaseProvider <- function(...) {
   }
 
   obj <- list(user=get_user,host=get_host,dbname=get_dbname,password=get_password,valid=valid,isValid=isValid,get=get,connect=getConnection)
-  class(obj) <- c('databaseInformer', 'argumentComponent' )
+  class(obj) <- c('databaseProvider', 'argumentComponent' )
   return( obj )
 }
 
