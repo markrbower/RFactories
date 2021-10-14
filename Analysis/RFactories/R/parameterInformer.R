@@ -15,11 +15,11 @@ parameterInformer <- function(...) {
   # 1. parse all args
   args <- list(...)
 
-  loadParameters <- function( dbp ) {
+  loadParameters <- function( dbp, aInf ) {
     if ( isValid("signalType") ) {
 #      conn <- dbp$connect()
 #      context <- topconnect::getContextFromTaskTable( conn, args )
-      parameters <- NPO:::loadParameters( args )
+      parameters <- RFactories:::loadParameters( dbp, args, aInf )
       # Incorporate these parameters into the object's list
       args <<- append( args, parameters )
 #      DBI::dbDisconnect( conn )
