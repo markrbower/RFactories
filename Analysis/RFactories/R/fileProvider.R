@@ -22,6 +22,9 @@ fileProvider <- function(...) {
   
   args <- list(...)
   
+  L <- list()
+  it <- NULL
+  
   if ( 'path' %in% names(args) ) {path <- RFactories:::parseArg( args, 'path' ); args[['path']] <- path}
   if ( 'dirPath' %in% names(args) ) {path <- RFactories:::parseArg( args, 'dirPath' ); args[['path']] <- path}
   
@@ -30,7 +33,6 @@ fileProvider <- function(...) {
   
   if ( !is.null(path) & !is.null(pattern) ) {
     L <- list.files(path=path,pattern=pattern,full.names = TRUE)
-    print(L)
     it <- itertools::ihasNext( iterators::iter(L) )
   } else {
     print( "Please supply a path and a file pattern." )
@@ -78,6 +80,10 @@ fileProvider <- function(...) {
     }
   }
   
+  listFiles <- function() {
+    L
+  }
+  
   # This is the standard way of returning an iterator, but it prevents adding other functiions.
   #obj <- ihasNext(it)
   #class(obj) <- c('ihasNext', 'abstractiter', 'iter', 'fileProvider', 'argumentComponent')
@@ -85,7 +91,7 @@ fileProvider <- function(...) {
   
   # R, however, only cares about what functiions are defined. Any object with 'nextElem' and 'hasNext'
   # defind will act like an iterator.
-  obj <- list( nextElem=nextEl, hasNext=hasNxt, isValid=isValid, get=get )
+  obj <- list( nextElem=nextEl, hasNext=hasNxt, isValid=isValid, get=get, listFiles=listFiles )
   class(obj) <- c( 'ihasNext', 'abstractiter', 'iter', 'fileProvider', 'argumentComponent' )
   obj
   
