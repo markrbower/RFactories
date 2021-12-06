@@ -19,6 +19,8 @@ fileProvider <- function(...) {
   #' @examples
   #' \dontrun{
   #' }
+  library(iterators)
+  library(itertools)
   
   args <- list(...)
   
