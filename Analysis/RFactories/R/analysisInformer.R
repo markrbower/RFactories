@@ -27,7 +27,7 @@ analysisInformer <- function(...) {
     }
   }
   add <- function( named_value ) {
-    args <<- append( args, named_value )
+    args[[names(named_value)]] <<- named_value
     fieldnames <<- names(args)
   }
   

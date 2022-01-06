@@ -15,16 +15,25 @@ argumentComposite <- function(...) {
   #' @examples
   #' \dontrun{
   #' }
+  library(rlist)
 
   iterationCount <- 0
   components <- list()
   
   add <- function( x ) {
     if ( "argumentComponent" %in% class(x) ) {
-      # Look through all field names and find if any existing component
-      # contains the same field. If so, they must hold the same value.
-      L <- length(components)
-      components[[L+1]] <<- x
+      # Look through existing components to see if any match this class.
+      # If so, overwrite them ...
+      isAbsent <- TRUE
+      for ( idx in seq_along(components) ) {
+          if ( setequal( class(components[[idx]]), class(x) ) ) {
+            components[[idx]] <<- x
+            isAbsent <- FALSE
+          }
+      }
+      if ( isAbsent ) {
+        components <<- rlist::list.prepend( components, x )
+      }
     }
   }
   
@@ -42,11 +51,32 @@ argumentComposite <- function(...) {
     # Run through each component and return the one named 'fieldname'   
     for ( component in components ) {
       if ( component$isValid( fieldname ) ) {
-#        print( class(component) )
+        #        print( class(component) )
         return( component$get( fieldname ) )
       }      
     }
     return( NULL )
+  }
+  
+  replace <- function( fieldname, value ) {
+    # Run through each component and return the one named 'fieldname'   
+    for ( component in components ) {
+      if ( component$isValid( fieldname ) ) {
+        component[[fieldname]] <- value
+      }      
+    }
+    return( 1 )
+  }
+  
+  remove <- function( fieldname ) {
+    # Run through each component and return the one named 'fieldname'   
+    for ( component in components ) {
+      if ( component$isValid( fieldname ) ) {
+        #        print( class(component) )
+        return( component$get( fieldname ) )
+      }      
+    }
+    return(  )
   }
   
   setIterationMax <- function() {
