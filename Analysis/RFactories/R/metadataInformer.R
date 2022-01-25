@@ -38,12 +38,20 @@ metadataInformer <- function( filename, compArgs ) {
   getPassword <- function( compArgs ) {
     password_key <- paste0( compArgs$get('dbname'), '_password' )
     vault <- topsecret::get_secret_vault()
-    if ( !( tolower(password_key) %in% tolower(secret::list_secrets(vault=vault)$secret))) {
-      password_key <- paste0( compArgs$get('dbname'), '_password' )
-      vault <- topsecret::get_secret_vault()
-      add_secret(name=password_key,value=readline("Enter MEF file password: "),users=Sys.info()['user'],vault=vault)
+    value <- NULL
+    tryCatch({
+      if ( !( tolower(password_key) %in% tolower(secret::list_secrets(vault=vault)$secret))) {
+        password_key <- paste0( compArgs$get('dbname'), '_password' )
+        vault <- topsecret::get_secret_vault()
+        add_secret(name=password_key,value=readline("Enter MEF file password: "),users=Sys.info()['user'],vault=vault)
+      }
+      value <- secret::get_secret(name=password_key,key=secret::local_key(),vault=vault)
+    }, error=function(e) { # Did the user pass in the file password?
+    })
+    if ( is.null(value) ) {
+      value <- compArgs$get('file_password')
     }
-    value <- secret::get_secret(name=password_key,key=secret::local_key(),vault=vault)
+    print( value )
     return( value )
   }
 
@@ -51,6 +59,7 @@ metadataInformer <- function( filename, compArgs ) {
   if ( 'filename' %in% names(args) ) {
     filename <- args[['filename']]
 #    args <- append( args, list( channel=basename(filename) ) )
+    file_password <- getPassword( compArgs )
     info <- meftools::mef_info( c(filename, getPassword( compArgs )) )
     args <- append( args, list( info=info ) )
   }

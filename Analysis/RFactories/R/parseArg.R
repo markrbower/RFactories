@@ -1,4 +1,6 @@
 parseArg <- function( args, name ) {
+  #' @export
+
   idx <- which( names(args) == name )
   if ( length(idx) > 0 ) {
     return( unname( unlist( args[name] ) ) )

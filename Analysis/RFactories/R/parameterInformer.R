@@ -10,16 +10,16 @@ parameterInformer <- function(...) {
   #' @examples
   #' \dontrun{
   #' }
-  
 
   # 1. parse all args
-  args <- list(...)
+  parameters <- list(...)
+  args <- parameters[[1]]
 
   loadParameters <- function( dbp, aInf ) {
     if ( isValid("signalType") ) {
 #      conn <- dbp$connect()
 #      context <- topconnect::getContextFromTaskTable( conn, args )
-      parameters <- RFactories:::loadParameters( dbp, args, aInf )
+      parameters <- append( parameters, RFactories:::loadParameters( dbp, args, aInf ) )
       # Incorporate these parameters into the object's list
       args <<- append( args, parameters )
 #      DBI::dbDisconnect( conn )
@@ -37,7 +37,12 @@ parameterInformer <- function(...) {
   
   get <- function( fieldname ) {
     if ( isValid(fieldname) ) {
-      return( args[[fieldname]] )
+      value <- args[[fieldname]]
+      if (class(value)=='list') {
+        return( value[[1]])
+      } else {
+        return( value )
+      }
     } else {
       return( character(0) )
     }

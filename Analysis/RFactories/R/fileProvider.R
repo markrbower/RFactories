@@ -65,8 +65,9 @@ fileProvider <- function(...) {
       return(TRUE)    
     } else {
       return(FALSE)
-    }    
+    }
   }
+
   get <- function( fieldname ) {
     if ( fieldname == 'channel' ) {
       if ( isValid('filename') ) {
