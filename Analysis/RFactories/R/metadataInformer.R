@@ -51,16 +51,19 @@ metadataInformer <- function( filename, compArgs ) {
     if ( is.null(value) ) {
       value <- compArgs$get('file_password')
     }
-    print( value )
+    print( paste0( "RFactories::getPassword: ", value ) )
     return( value )
   }
 
   # If args contains a "filename" field, strip of the last string as the "channel".
+  file_password <- compArgs$get('file_password')
   if ( 'filename' %in% names(args) ) {
     filename <- args[['filename']]
 #    args <- append( args, list( channel=basename(filename) ) )
-    file_password <- getPassword( compArgs )
-    info <- meftools::mef_info( c(filename, getPassword( compArgs )) )
+    if ( is.null(file_password) ) {
+      file_password <- getPassword( compArgs )
+    }
+    info <- meftools::mef_info( c(filename, file_password) )
     args <- append( args, list( info=info ) )
   }
 

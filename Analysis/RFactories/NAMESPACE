@@ -2,8 +2,10 @@
 
 export(analysisInformer)
 export(argumentComposite)
+export(compositeVariables)
 export(databaseProvider)
 export(fileProvider)
 export(metadataInformer)
 export(parameterInformer)
 export(parseArg)
+export(script_createCompositeVariablesObject)
